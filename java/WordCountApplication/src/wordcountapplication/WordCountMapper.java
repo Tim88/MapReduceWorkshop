@@ -10,17 +10,18 @@ import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
-	
-	private final static IntWritable one = new IntWritable(1);
-	
+public class WordCountMapper extends Mapper<LongWritable, Text, Text, IntWritable> {	
 	@Override
-	public void map(Object key, Text value, Context output) throws IOException,
-			InterruptedException {
-		
-		//If more than one word is present, split using white space.
-		String[] words = value.toString().split(" ");
-		//Only the first word is the candidate name
-		output.write(new Text(words[0]), one);
+
+	public void map(LongWritable key, Text value, Context con) throws IOException, InterruptedException
+	{
+	String line = value.toString();
+	String[] words=line.split(",");
+		for(String word: words )
+		{
+			Text outputKey = new Text(word.toUpperCase().trim());
+			IntWritable outputValue = new IntWritable(1);
+			con.write(outputKey, outputValue);
+		}
 	}
 }

@@ -12,13 +12,15 @@ import org.apache.hadoop.io.IntWritable;
  * @author barent
  */
 public class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-    
-    public void reduce(Text key, Iterable<IntWritable> values, Context output)
-               throws IOException, InterruptedException {
-        int voteCount = 0;
-        for(IntWritable value : values){
-            wordCount += value.get();
+
+    public void reduce(Text word, Iterable<IntWritable> values, Context con) throws IOException, InterruptedException
+    {
+        int sum = 0;
+        for(IntWritable value : values)
+        {
+            sum += value.get();
         }
-        output.write(key, new IntWritable(wordCount));
+        con.write(word, new IntWritable(sum));
+    }
     }
 }
