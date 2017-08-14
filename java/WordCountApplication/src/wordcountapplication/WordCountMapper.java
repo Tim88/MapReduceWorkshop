@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package votecountapplication;
+package wordcountapplication;
 
 import java.io.IOException;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class VoteCountMapper extends Mapper<Object, Text, Text, IntWritable> {
+public class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
 	
 	private final static IntWritable one = new IntWritable(1);
 	

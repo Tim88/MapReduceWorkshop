@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package votecountapplication;
+package wordcountapplication;
 
 import org.apache.hadoop.io.IntWritable;
 
@@ -11,14 +11,14 @@ import org.apache.hadoop.io.IntWritable;
  *
  * @author barent
  */
-public class VoteCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class WordCountReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     
     public void reduce(Text key, Iterable<IntWritable> values, Context output)
                throws IOException, InterruptedException {
         int voteCount = 0;
         for(IntWritable value : values){
-            voteCount += value.get();
+            wordCount += value.get();
         }
-        output.write(key, new IntWritable(voteCount));
+        output.write(key, new IntWritable(wordCount));
     }
 }
