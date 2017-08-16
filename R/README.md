@@ -2,6 +2,10 @@
 
 https://coderwall.com/p/imxf6g/running-wordcount-on-hadoop-using-r-script
 
+vi
+:set ff=unix
+:wq
+
 Zorg voor input-bestanden en kopieer ze naar hdfs
 zorg dat de mapper en reducer executie-rechten hebben
 bin/hadoop dfs -copyFromLocal <input-bestandendir> /user/<gebruiker>/<input-bestandendir>
