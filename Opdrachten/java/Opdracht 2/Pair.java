@@ -22,11 +22,29 @@ import org.apache.hadoop.util.ToolRunner;
 public class Pair extends Configured implements Tool {
 
   public static class PairMapper 
-   extends Mapper<Object, // TODO: change Object to input key type
-                  Object, // TODO: change Object to input value type
-                  Object, // TODO: change Object to output key type
-                  Object> { // TODO: change Object to output value type
-    // TODO: implement mapper
+  extends Mapper<LongWritable, 
+                  Pair,
+                  TextPair,
+                  IntWritable> { // TODO: change Object to output value type
+
+    private IntWritable ONE = new IntWritable(1);
+    private TextPair textPair = new TextPair();
+  
+    @Override
+    protected void map(LongWritable key, Pair value, Context context)
+            throws IOException, InterruptedException {
+
+      String line = value.toString();
+      String[] words = line.split("\\s+");
+      for(String word1 : words) {
+        for(String word2 : words){
+          if(!word1.equals(word2)){
+            textPair.set(word1, word2);
+            context.write(textPair, ONE)
+          }
+        }
+      }
+    }
   }
 
   public static class PairReducer

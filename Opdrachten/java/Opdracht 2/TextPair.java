@@ -18,19 +18,24 @@ import org.apache.hadoop.io.WritableUtils;
 public class TextPair implements WritableComparable<TextPair> {
 
 // TODO: add the pair objects as TextPair fields
+private Text first = new Text();
+private Text second = new Text();
+
 
 public void set(Text first, Text second) {
   // TODO: implement the set method that changes the Pair content
+  this.first = new Text(first);
+  this.second = new Text(second);
 }
 
 public Text getFirst() {
   // TODO: implement the first getter
-  return null;
+  return this.first;
 }
 
 public Text getSecond() {
   // TODO: implement the second getter
-  return null;
+  return this.second;
 }
   
 public TextPair() {
@@ -66,13 +71,22 @@ public int hashCode() {
 @Override
 public boolean equals(Object o) {
   // TODO: implement equals
+  if(this.first.equals(o.first) && this.second.equals(o.first)){
+    return true;
+  }
+  else if (this.second.equals(o.first) && this.first.equals(o.second)){
+    return true;
+  }
   return false;
 }
 
 @Override
 public int compareTo(TextPair tp) {
  // TODO: implement the comparison between this and tp
- return 0;
+  if(this.equals(tp)){
+    return 1;
+  }
+  return 0;
 }
 
 @Override
