@@ -1,95 +1,83 @@
 package fr.eurecom.dsg.mapreduce;
 
 import java.io.IOException;
-import java.util.StringTokenizer;
+import java.util.Iterator;
 
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.mapred.FileInputFormat;
+import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobClient;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.MapReduceBase;
+import org.apache.hadoop.mapred.Mapper;
+import org.apache.hadoop.mapred.OutputCollector;
+import org.apache.hadoop.mapred.Reducer;
+import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+public class Pairs extends Configured implements Tool {
 
-public class Pair extends Configured implements Tool {
+  public static class PairsMapper extends MapReduceBase implements
+      Mapper<LongWritable, Text, TextPair, IntWritable> {
 
-  public static class PairMapper 
-  extends Mapper<LongWritable, 
-                  Pair,
-                  TextPair,
-                  IntWritable> { // TODO: change Object to output value type
+    private final static IntWritable one = new IntWritable(1);
 
-    private IntWritable ONE = new IntWritable(1);
-    private TextPair textPair = new TextPair();
-  
     @Override
-    protected void map(LongWritable key, Pair value, Context context)
-            throws IOException, InterruptedException {
-
+    public void map(LongWritable key, Text value,
+        OutputCollector<TextPair, IntWritable> output, Reporter reporter)
+        throws IOException {
       String line = value.toString();
       String[] words = line.split("\\s+");
-      for(String word1 : words) {
-        for(String word2 : words){
-          if(!word1.equals(word2)){
-            textPair.set(word1, word2);
-            context.write(textPair, ONE)
+
+      for (String first : words) {
+        for (String second : words) {
+          if (!first.equals(second)) {
+            output.collect(new TextPair(first, second), one);
           }
         }
       }
     }
   }
 
-  public static class PairReducer
-    extends Reducer<Object, // TODO: change Object to input key type
-                    Object, // TODO: change Object to input value type
-                    Object, // TODO: change Object to output key type
-                    Object> { // TODO: change Object to output value type
-    // TODO: implement reducer
-  }
+  public static class PairsReducer extends MapReduceBase implements
+      Reducer<TextPair, IntWritable, TextPair, IntWritable> {
 
-  private int numReducers;
-  private Path inputPath;
-  private Path outputDir;
-
-  public Pair(String[] args) {
-    if (args.length != 3) {
-      System.out.println("Usage: Pair <num_reducers> <input_path> <output_path>");
-      System.exit(0);
+    @Override
+    public void reduce(TextPair key, Iterator<IntWritable> values,
+        OutputCollector<TextPair, IntWritable> output, Reporter reporter)
+        throws IOException {
+      int sum = 0;
+      while (values.hasNext()) {
+        sum += values.next().get();
+      }
+      output.collect(key, new IntWritable(sum));
     }
-    this.numReducers = Integer.parseInt(args[0]);
-    this.inputPath = new Path(args[1]);
-    this.outputDir = new Path(args[2]);
-  }
-  
-
-  @Override
-  public int run(String[] args) throws Exception {
-
-    Configuration conf = this.getConf();
-    Job job = null;  // TODO: define new job instead of null using conf e setting a name
-    
-    // TODO: set job input format
-    // TODO: set map class and the map output key and value classes
-    // TODO: set reduce class and the reduce output key and value classes
-    // TODO: set job output format
-    // TODO: add the input file as job input (from HDFS) to the variable inputFile
-    // TODO: set the output path for the job results (to HDFS) to the variable outputPath
-    // TODO: set the number of reducers using variable numberReducers
-    // TODO: set the jar class
-
-    return job.waitForCompletion(true) ? 0 : 1;
   }
 
   public static void main(String[] args) throws Exception {
-    int res = ToolRunner.run(new Configuration(), new Pair(args), args);
-    System.exit(res);
+    int exitCode = ToolRunner.run(new Pairs(), args);
+    System.exit(exitCode);
   }
+
+  @Override
+  public int run(String[] args) throws Exception {
+    JobConf conf = new JobConf(getConf(), getClass());
+    conf.setJobName("Pairs");
+    conf.setMapperClass(PairsMapper.class);
+    conf.setReducerClass(PairsReducer.class);
+    conf.setMapOutputKeyClass(TextPair.class);
+    conf.setMapOutputValueClass(IntWritable.class);
+    conf.setOutputKeyClass(TextPair.class);
+    conf.setOutputValueClass(IntWritable.class);
+    FileInputFormat.addInputPath(conf, new Path(args[0]));
+    FileOutputFormat.setOutputPath(conf, new Path(args[1]));
+    JobClient.runJob(conf);
+    return 0;
+  }
+
 }

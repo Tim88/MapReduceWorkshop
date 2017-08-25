@@ -70,7 +70,7 @@ public int hashCode() {
 
 @Override
 public boolean equals(Object o) {
-  // TODO: implement equals
+  // TODO: implement equals niet goed, je moet hashCode gebruiken
   if(this.first.equals(o.first) && this.second.equals(o.first)){
     return true;
   }
