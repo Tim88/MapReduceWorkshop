@@ -1,4 +1,4 @@
-package fr.eurecom.dsg.mapreduce;
+package wordcount;
 
 import java.io.IOException;
 

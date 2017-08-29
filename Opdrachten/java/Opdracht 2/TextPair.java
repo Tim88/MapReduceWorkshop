@@ -1,4 +1,4 @@
-package fr.eurecom.dsg.mapreduce;
+package pairs;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -18,14 +18,14 @@ import org.apache.hadoop.io.WritableUtils;
 public class TextPair implements WritableComparable<TextPair> {
 
 // TODO: add the pair objects as TextPair fields
-private Text first = new Text();
-private Text second = new Text();
+private Text first;
+private Text second;
 
 
 public void set(Text first, Text second) {
   // TODO: implement the set method that changes the Pair content
-  this.first = new Text(first);
-  this.second = new Text(second);
+  this.first = first;
+  this.second = second;
 }
 
 public Text getFirst() {
@@ -41,6 +41,7 @@ public Text getSecond() {
 public TextPair() {
   // TODO: implement the constructor, empty constructor MUST be implemented
   //       for deserialization
+  set(new Text(), new Text());
 }
 
 public TextPair(String first, String second) {
@@ -55,45 +56,45 @@ public TextPair(Text first, Text second) {
 public void write(DataOutput out) throws IOException {
   // TODO: write to out the serialized version of this such that
   //       can be deserializated in future. This will be use to write to HDFS
+  first.write(out);
+  second.write(out);
 }
 
 @Override
 public void readFields(DataInput in) throws IOException {
   // TODO: read from in the serialized version of a Pair and deserialize it
+  first.readFields(in);
+  second.readFields(in);
 }
 
 @Override
 public int hashCode() {
   // TODO: implement hash
-  return 0;
+  return first.hashCode() * 163 + second.hashCode();
 }
 
 @Override
 public boolean equals(Object o) {
-  // TODO: implement equals niet goed, je moet hashCode gebruiken
-  if(this.first.equals(o.first) && this.second.equals(o.first)){
-    return true;
-  }
-  else if (this.second.equals(o.first) && this.first.equals(o.second)){
-    return true;
+  if (o instanceof TextPair) {
+    TextPair tp = (TextPair) o;
+    return first.equals(tp.first) && second.equals(tp.second);
   }
   return false;
 }
 
 @Override
 public int compareTo(TextPair tp) {
- // TODO: implement the comparison between this and tp
-  if(this.equals(tp)){
-    return 1;
+  int cmp = first.compareTo(tp.first);
+  if (cmp != 0) {
+    return cmp;
   }
-  return 0;
+  return second.compareTo(tp.second);
 }
 
 @Override
-public String toString() {
-  // TODO: implement toString for text output format
-  return super.toString();
-}
+  public String toString() {
+    return first + "\t" + second;
+  }
 
 
 
@@ -139,8 +140,8 @@ public static class FirstComparator extends WritableComparator {
  
  private static final Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
  
- public FirstComparator() {
-   super(TextPair.class);
+ public FirstComparator() 
+{   super(TextPair.class);
  }
 
  @Override

@@ -1,4 +1,4 @@
-package ch03;
+package stripes;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -83,7 +83,7 @@ public class Stripes extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		JobConf conf = new JobConf(getConf(), getClass());
-		conf.setJobName("Stripse");
+		conf.setJobName("Stripes");
 		conf.setMapperClass(StripesMapper.class);
 		conf.setReducerClass(StripesReducer.class);
 		conf.setMapOutputKeyClass(Text.class);

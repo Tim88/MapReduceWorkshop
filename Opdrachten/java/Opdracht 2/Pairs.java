@@ -1,4 +1,4 @@
-package fr.eurecom.dsg.mapreduce;
+package pairs;
 
 import java.io.IOException;
 import java.util.Iterator;
