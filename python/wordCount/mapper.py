@@ -1,4 +1,4 @@
-#!/usr/bin/evn python
+#!/usr/bin/python
 
 #dit moet in /home/<gebruiker>/<ditbestand>
 #voeg executie rechten toe

@@ -1,0 +1,3 @@
+hadoop jar /usr/lib/hadoop-mapreduce/hadoop-streaming.jar \
+-D stream.num.map.output.key.fields=2 -input crane -output crane_out \
+-file ./maptf.sh -mapper maptf.sh -file ./redtf.sh -reducer redtf.sh
