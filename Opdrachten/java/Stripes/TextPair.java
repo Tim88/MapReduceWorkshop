@@ -1,4 +1,4 @@
-package pairs;
+package stripes;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -17,30 +17,24 @@ import org.apache.hadoop.io.WritableUtils;
  */
 public class TextPair implements WritableComparable<TextPair> {
 
-// TODO: add the pair objects as TextPair fields
 private Text first;
 private Text second;
 
 
 public void set(Text first, Text second) {
-  // TODO: implement the set method that changes the Pair content
   this.first = first;
   this.second = second;
 }
 
 public Text getFirst() {
-  // TODO: implement the first getter
   return this.first;
 }
 
 public Text getSecond() {
-  // TODO: implement the second getter
   return this.second;
 }
   
 public TextPair() {
-  // TODO: implement the constructor, empty constructor MUST be implemented
-  //       for deserialization
   set(new Text(), new Text());
 }
 
@@ -54,22 +48,18 @@ public TextPair(Text first, Text second) {
 
 @Override
 public void write(DataOutput out) throws IOException {
-  // TODO: write to out the serialized version of this such that
-  //       can be deserializated in future. This will be use to write to HDFS
   first.write(out);
   second.write(out);
 }
 
 @Override
 public void readFields(DataInput in) throws IOException {
-  // TODO: read from in the serialized version of a Pair and deserialize it
   first.readFields(in);
   second.readFields(in);
 }
 
 @Override
 public int hashCode() {
-  // TODO: implement hash
   return first.hashCode() * 163 + second.hashCode();
 }
 
@@ -102,10 +92,8 @@ public int compareTo(TextPair tp) {
 
 // DO NOT TOUCH THE CODE BELOW
 
-/** Compare two pairs based on their values */
 public static class Comparator extends WritableComparator {
  
-  /** Reference to standard Hadoop Text comparator */
   private static final Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
  
   public Comparator() {
@@ -135,7 +123,6 @@ static {
  WritableComparator.define(TextPair.class, new Comparator());
 }
 
-/** Compare just the first element of the Pair */
 public static class FirstComparator extends WritableComparator {
  
  private static final Text.Comparator TEXT_COMPARATOR = new Text.Comparator();
@@ -168,3 +155,4 @@ public static class FirstComparator extends WritableComparator {
 
 }
 }
+
