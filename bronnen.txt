@@ -1,0 +1,19 @@
+voorbeelden van python en rscripts:
+
+http://www.michael-noll.com/tutorials/writing-an-hadoop-mapreduce-program-in-python/
+
+https://coderwall.com/p/imxf6g/running-wordcount-on-hadoop-using-r-script
+
+Behulpzame blog over MapReduce design patterns (wel een beetje oud):
+
+http://codingjunkie.net/categories/mapreduce/
+
+Hortonworks VM, een vm met hadoop erop geinstalleerd:
+
+https://hortonworks.com/products/sandbox/
+
+Cloudera MapReduce lab, de opdrachten met een paar opdrachten uitgewerkt:
+
+https://github.com/michiard/CLOUDS-LAB/tree/master/labs/mapreduce-lab
+
+Hadoop The definitive guide door Tom White
